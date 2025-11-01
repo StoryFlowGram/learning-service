@@ -17,10 +17,14 @@ class GetCardByIdUseCase:
                 raise CardNotFoundException(f"Карта с id {card_id} не найдена у пользователя {user_id}")
             
         return CardDTO(
-            id=result.id,
-            user_id=result.user_id,
-            question=result.question,
-            answer=result.answer,
-            created_at=str(result.created_at),
-            updated_at=str(result.updated_at)
+            id = result.id,
+            user_id = result.user_id,
+            word = result.word,
+            translation = result.translation,
+            context = result.context,
+            next_review_at = result.next_review_at,
+            previous_interval = result.previous_interval.days,
+            ease_factor = result.ease_factor,
+            repetitions = result.repetitions,
+            created_at=result.created_at
         )

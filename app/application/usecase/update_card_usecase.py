@@ -4,6 +4,8 @@ from app.application.dto.card_dto import CardDTO
 from app.domain.exception.card_exceptions import CardNotFoundException
 
 
+# Оставить про запас Любой код с Update
+
 class UpdateCardUseCase:
     def __init__(self, uow: IUnitOfWork):
         self.uow = uow
@@ -21,8 +23,12 @@ class UpdateCardUseCase:
         return CardDTO(
             id=update_card.id,
             user_id=update_card.user_id,
-            question=update_card.question,
-            answer=update_card.answer,
-            created_at=str(update_card.created_at),
-            updated_at=str(update_card.updated_at)
+            word=update_card.word,
+            translation=update_card.translation,
+            context=update_card.context,
+            next_review_at=update_card.next_review_at,
+            previous_interval=update_card.previous_interval.days,
+            ease_factor=update_card.ease_factor,
+            repetitions=update_card.repetitions,
+            created_at=update_card.created_at
         )

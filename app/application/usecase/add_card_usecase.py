@@ -10,17 +10,23 @@ class AddCardUseCase:
 
     async def __call__(self, card: Card):
         async with self.uow:
-            check_existing = await self.uow.cards.get_by_id(card.id, card.user_id)
+            check_existing = await self.uow.cards.get_by_word_and_user(
+                card.word, 
+                card.user_id
+            )
             if check_existing:
-                raise CardAlreadyExistsException(f"Карта с  {card.id} уже существует в пользователя {card.user_id}")
-            await self.uow.cards.add(card)
-
-        
+                raise CardAlreadyExistsException(card.user_id, card.word)
+            card_with_id = await self.uow.cards.add(card)       
+            
         return CardDTO(
-            id=card.id,
-            user_id=card.user_id,
-            question=card.question,
-            answer=card.answer,
-            created_at=str(card.created_at),
-            updated_at=str(card)
-        )
+            id=card_with_id.id,
+            user_id=card_with_id.user_id,
+            word=card_with_id.word,
+            translation=card_with_id.translation,
+            context=card_with_id.context,
+            next_review_at=card_with_id.next_review_at,
+            previous_interval=card_with_id.previous_interval.days,
+            ease_factor=card_with_id.ease_factor,
+            repetitions=card_with_id.repetitions,
+            created_at=card_with_id.created_at
+            )
