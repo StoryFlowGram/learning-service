@@ -28,3 +28,7 @@ class CardProtocol(ABC):
     @abstractmethod
     async def delete(self, card_id: int, user_id: int) -> None:
         ...
+
+    @abstractmethod
+    async def get_by_word_and_user(self, word: str, user_id: int) -> Card:
+        ...
