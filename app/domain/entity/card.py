@@ -3,15 +3,13 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 import math
 
-
-from app.domain.value_object.word_text_vo import WordText
 from app.domain.value_object.review_quality_vo import ReviewQuality
 
 @dataclass
 class Card:
     user_id: int
-    word: WordText
-    translation: WordText
+    word: str
+    translation: str
     context: Optional[str]
 
     next_review_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
@@ -19,8 +17,6 @@ class Card:
     ease_factor: float = field(default=2.5)
     repetitions: int = field(default=0)
     MIN_EASE_FACTOR: float = 1.3
-
-
     id: Optional[int] = None
     created_at: Optional[datetime] = None
     def update_srs_state(self, quality: ReviewQuality):
