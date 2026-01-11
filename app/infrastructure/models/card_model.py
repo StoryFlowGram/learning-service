@@ -8,7 +8,7 @@ from sqlalchemy import String, BigInteger, DateTime, Integer, Float, CheckConstr
 class CardModel(Base):
     __tablename__ = "cards"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(BigInteger)
+    user_id: Mapped[int] = mapped_column(Integer)
     word: Mapped[str] = mapped_column(String)
     translation: Mapped[str] = mapped_column(String)
     context: Mapped[str] = mapped_column(Text)

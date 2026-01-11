@@ -3,7 +3,6 @@ from app.infrastructure.database.session import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
 from app.infrastructure.database.uow import UnitOfWork
-from app.infrastructure.security.jwt_verifier import JWTTokenVerifier
 
 
 async def card_protocol(session:AsyncSession = Depends(get_session)) -> CardRepository:
@@ -19,6 +18,3 @@ async def uow_dependencies():
     finally:
         await session.close()
 
-
-def token_verifier():
-    return JWTTokenVerifier()
