@@ -1,7 +1,7 @@
 from app.infrastructure.database.base import Base
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column, validates
-from sqlalchemy import String, BigInteger, DateTime, Integer, Float, CheckConstraint, UniqueConstraint, Index, Text
+from sqlalchemy import String, DateTime, Integer, Float, CheckConstraint, UniqueConstraint, Index, Text, ForeignKey
 
 
 

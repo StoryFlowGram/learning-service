@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 
@@ -31,15 +32,13 @@ class CardRepository(CardProtocol):
             return None
         return orm_to_domain(orm)
 
-    async def get_due_for_review(self, user_id, limit, now):
+    async def get_due_for_review(self, user_id: int, limit: int,  now: datetime):
         stmt = select(CardModel).where(
             CardModel.user_id == user_id,
             CardModel.next_review_at <= now
-        ).limit(limit)
+        ).limit(limit).order_by(CardModel.next_review_at.asc()) # asc - от самых старых к новым
         result = await self.session.execute(stmt)
         orms = result.scalars().all()
-        if orms is None:
-            return []
         return [orm_to_domain(orm) for orm in orms]
     
     async def get_all_by_user(self, user_id):
