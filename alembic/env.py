@@ -20,7 +20,7 @@ from app.infrastructure.config.settings import Settings
 
 settings = Settings()
 
-url = str(settings.database.get_database_url("asyncpg"))
+url = str(settings.database.get_database_url("psycopg2"))
 config = context.config
 
 config.set_main_option("sqlalchemy.url", url)
