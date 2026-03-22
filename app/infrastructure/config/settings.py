@@ -1,28 +1,27 @@
-from pydantic_settings import BaseSettings
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
-
 class Database(BaseSettings):
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
-    DB_HOST: str
+    model_config = SettingsConfigDict(extra="ignore")
 
-    def get_database_url(self, DB_API) -> URL:
+    user: str = Field(alias="LEARN_DB_USER")
+    password: str = Field(alias="LEARN_DB_PASSWORD")
+    db_name: str = Field(alias="LEARN_DB_NAME")
+    
+    host: str = Field(default="learn-db", alias="LEARN_DB_HOST")
+    port: int = 5432
+
+    def get_database_url(self, DB_API: str) -> URL:
         return URL.create(
             drivername=f"postgresql+{DB_API}",
-            username=self.POSTGRES_USER,
-            password=self.POSTGRES_PASSWORD,
-            host=self.POSTGRES_DB,
-            database=self.DB_HOST
+            username=self.user,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+            database=self.db_name
         )
-    
-    model_config = {
-        "extra": "ignore",
-        "env_file_encoding": "utf-8"
-    }
-
 
 class Settings:
-    def __init__(self, env_file: str | None = None):
-        self.database = Database(_env_file=env_file)
+    def __init__(self):
+        self.database = Database()

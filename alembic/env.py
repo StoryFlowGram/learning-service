@@ -20,10 +20,11 @@ from app.infrastructure.config.settings import Settings
 
 settings = Settings()
 
-url = str(settings.database.get_database_url("psycopg2"))
+url_obj = settings.database.get_database_url("psycopg2")
 config = context.config
 
-config.set_main_option("sqlalchemy.url", url)
+db_url = str(url_obj.render_as_string(hide_password=False))
+config.set_main_option("sqlalchemy.url", db_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

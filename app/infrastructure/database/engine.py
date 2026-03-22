@@ -3,7 +3,7 @@ from app.infrastructure.config.settings import Settings
 from app.infrastructure.database.base import Base
 
 
-settings = Settings(env_file=".env")
+settings = Settings()
 
 engine: AsyncEngine  = create_async_engine(
     settings.database.get_database_url(DB_API="asyncpg"),
