@@ -29,8 +29,9 @@ async def get_due_for_review(
     usecase = GetDueForReviewUseCase(uow)
     try: 
         return await usecase(user_id, limit, now)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except Exception:
+        logger.exception("Failed to get due cards for user %s", user_id)
+        raise HTTPException(status_code=400, detail="Failed to load cards for review")
 
 
 @card_router.post("/", response_model=CardResponseSchema, status_code=201, description="Добавление карточки")
@@ -45,8 +46,9 @@ async def add_card(
         card_domain = schema_to_domain(schema, user_id)
         
         return await usecase(card_domain)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except Exception:
+        logger.exception("Failed to add card for user %s", user_id)
+        raise HTTPException(status_code=400, detail="Failed to add card")
     
 
 @card_router.get("/{card_id}", response_model=CardResponseSchema, description="Получение карточки по ID")
@@ -59,8 +61,9 @@ async def get_card(
     usecase = GetCardByIdUseCase(uow)
     try:
         return await usecase(card_id, user_id)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except Exception:
+        logger.exception("Failed to get card %s for user %s", card_id, user_id)
+        raise HTTPException(status_code=400, detail="Failed to get card")
     
 
 @card_router.get("/", response_model=list[CardResponseSchema], description="Получение всех карточек пользователя")
@@ -71,8 +74,9 @@ async def get_all_card_by_user(
     usecase  = GetAllCardsForUserUseCase(uow)
     try:
         return await usecase(user_id)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except Exception:
+        logger.exception("Failed to get all cards for user %s", user_id)
+        raise HTTPException(status_code=400, detail="Failed to get user cards")
     
 
 @card_router.patch("/review", response_model=CardResponseSchema, description="Отправка результата повторения (SRS)")
@@ -88,10 +92,11 @@ async def review_card(
             card_id=schema.card_id,
             quality_value=schema.quality
         )
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid review payload")
+    except Exception:
+        logger.exception("Failed to review card %s for user %s", schema.card_id, user_id)
+        raise HTTPException(status_code=400, detail="Failed to review card")
 
 @card_router.delete("/{card_id}", status_code=204, description="Удаление карточки по ID")
 async def delete_card(
@@ -101,5 +106,6 @@ async def delete_card(
     usecase = DeleteCardForUserUseCase(uow)
     try:
         return await usecase(card_id, user_id)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except Exception:
+        logger.exception("Failed to delete card %s for user %s", card_id, user_id)
+        raise HTTPException(status_code=400, detail="Failed to delete card")
