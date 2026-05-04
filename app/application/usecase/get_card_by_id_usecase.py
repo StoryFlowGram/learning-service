@@ -1,30 +1,15 @@
-from app.domain.entity.card import Card
 from app.application.dto.card_dto import CardDTO
 from app.application.protocols.uow import IUnitOfWork
 from app.domain.exception.card_exceptions import CardNotFoundException
-
-
 
 
 class GetCardByIdUseCase:
     def __init__(self, uow: IUnitOfWork):
         self.uow = uow
 
-    async def __call__(self, card_id: int, user_id: int):
+    async def __call__(self, card_id: int, user_id: int) -> CardDTO:
         async with self.uow:
             result = await self.uow.cards.get_by_id(card_id, user_id)
             if not result:
-                raise CardNotFoundException(f"Карта с id {card_id} не найдена у пользователя {user_id}")
-            
-        return CardDTO(
-            id = result.id,
-            user_id = result.user_id,
-            word = result.word,
-            translation = result.translation,
-            context = result.context,
-            next_review_at = result.next_review_at,
-            previous_interval = result.previous_interval.days,
-            ease_factor = result.ease_factor,
-            repetitions = result.repetitions,
-            created_at=result.created_at
-        )
+                raise CardNotFoundException(card_id=card_id, user_id=user_id)
+            return CardDTO.from_entity(result)

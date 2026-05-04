@@ -1,9 +1,10 @@
+import math
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
-from typing import Optional
-import math
+from typing import ClassVar, Optional
 
 from app.domain.value_object.review_quality_vo import ReviewQuality
+
 
 @dataclass
 class Card:
@@ -16,17 +17,18 @@ class Card:
     previous_interval: timedelta = field(default_factory=lambda: timedelta(days=0))
     ease_factor: float = field(default=2.5)
     repetitions: int = field(default=0)
-    MIN_EASE_FACTOR: float = 1.3
     id: Optional[int] = None
     created_at: Optional[datetime] = None
-    def update_srs_state(self, quality: ReviewQuality):
-        if quality.value >= 3:
-            self.ease_factor = max(
-                self.MIN_EASE_FACTOR,
-                self.ease_factor + (0.1 - (5 - quality.value) * (0.08 + (5 - quality.value) * 0.02))
-            )
 
-        if quality.value >= 3: 
+    MIN_EASE_FACTOR: ClassVar[float] = 1.3
+
+    def update_srs_state(self, quality: ReviewQuality):
+        self.ease_factor = max(
+            self.MIN_EASE_FACTOR,
+            self.ease_factor + (0.1 - (5 - quality.value) * (0.08 + (5 - quality.value) * 0.02)),
+        )
+
+        if quality.value >= 3:
             if self.repetitions == 0:
                 next_interval_days = 1
             elif self.repetitions == 1:
@@ -35,7 +37,7 @@ class Card:
                 next_interval_days = math.ceil(self.previous_interval.days * self.ease_factor)
             self.repetitions += 1
             self.previous_interval = timedelta(days=next_interval_days)
-        else: 
+        else:
             self.repetitions = 0
             next_interval_days = 1
             self.previous_interval = timedelta(days=next_interval_days)
