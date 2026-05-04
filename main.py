@@ -15,3 +15,6 @@ app.dependency_overrides[depends.uow_dependencies] = di.uow_dependencies
 app.dependency_overrides[depends.card_protocol] = di.card_protocol
 
 
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "service": "learning-service"}
