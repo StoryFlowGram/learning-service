@@ -11,10 +11,10 @@ async def card_protocol(session:AsyncSession = Depends(get_session)) -> CardRepo
 
 async def uow_dependencies():
     session: AsyncSession = await get_session()
-    uow =UnitOfWork(session)
-    
+    uow = UnitOfWork(session)
+
     try:
-        return uow
+        yield uow
     finally:
         await session.close()
 
