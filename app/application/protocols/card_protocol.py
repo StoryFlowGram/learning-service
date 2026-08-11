@@ -21,6 +21,10 @@ class CardProtocol(ABC):
         ...
 
     @abstractmethod
+    async def get_due_count(self, user_id: int, now: datetime) -> int:
+        ...
+
+    @abstractmethod
     async def get_all_by_user(self, user_id: int) -> list[Card]:
         ...
 

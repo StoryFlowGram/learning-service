@@ -8,13 +8,11 @@ from app.presentation.api.v1.card_controller import card_router
 
 app = FastAPI()
 
-app.include_router(card_router)
-
-
-app.dependency_overrides[depends.uow_dependencies] = di.uow_dependencies
-app.dependency_overrides[depends.card_protocol] = di.card_protocol
-
-
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "service": "learning-service"}
+
+app.include_router(card_router)
+
+app.dependency_overrides[depends.uow_dependencies] = di.uow_dependencies
+app.dependency_overrides[depends.card_protocol] = di.card_protocol

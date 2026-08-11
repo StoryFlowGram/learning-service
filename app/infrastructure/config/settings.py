@@ -22,6 +22,13 @@ class Database(BaseSettings):
             database=self.db_name
         )
 
+class RabbitMQ(BaseSettings):
+    model_config = SettingsConfigDict(extra="ignore")
+
+    url: str = Field(alias="RABBITMQ_URL")
+    reminder_queue: str = Field(alias="RABBITMQ_REMINDER_QUEUE")
+
 class Settings:
     def __init__(self):
         self.database = Database()
+        self.rabbitmq = RabbitMQ()

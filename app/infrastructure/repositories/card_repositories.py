@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update, delete
+from sqlalchemy import delete, func, select, update
 
 from app.application.protocols.card_protocol import CardProtocol
 from app.infrastructure.mapper.card_mapper import orm_to_domain, domain_to_orm
@@ -40,6 +40,14 @@ class CardRepository(CardProtocol):
         result = await self.session.execute(stmt)
         orms = result.scalars().all()
         return [orm_to_domain(orm) for orm in orms]
+
+    async def get_due_count(self, user_id: int, now: datetime) -> int:
+        stmt = (
+            select(func.count(CardModel.id))
+            .where(CardModel.user_id == user_id, CardModel.next_review_at <= now)
+        )
+        result = await self.session.execute(stmt)
+        return int(result.scalar() or 0)
     
     async def get_all_by_user(self, user_id):
         stmt =  select(CardModel).where(

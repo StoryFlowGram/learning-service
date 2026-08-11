@@ -7,7 +7,7 @@ settings = Settings()
 
 engine: AsyncEngine  = create_async_engine(
     settings.database.get_database_url(DB_API="asyncpg"),
-    echo=True,
+    echo=False,
 )
 
 

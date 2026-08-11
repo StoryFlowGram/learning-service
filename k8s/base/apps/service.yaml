@@ -1,0 +1,25 @@
+# Service отвечает за стабильное DNS-имя и маршрутизацию трафика на поды Deployment.
+# Через него другие сервисы обращаются к book-service внутри кластера.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: learning-service   
+                           
+  namespace: default
+  labels:
+    app: learning-service
+    env: production
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: learning-service      
+
+
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8000           
+      targetPort: http     
